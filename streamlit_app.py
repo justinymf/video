@@ -56,4 +56,4 @@ with st.sidebar:
 
 # --- 主畫面：播放器 ---
 if st.session_state.playlist:
-    current_vid = st.session
+   current_vid = st.session_state.playlist[st.session_state.current_idx]
