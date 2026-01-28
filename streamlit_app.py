@@ -87,4 +87,55 @@ if mode == "網上清單模式 (Cloud Sync)":
             st.session_state.cloud_idx = (st.session_state.cloud_idx + 1) % len(playlist)
             st.rerun()
     else:
-        st.info("清單係空嘅。
+        st.info("清單係空嘅。")
+
+# ==========================================
+# 模式 2：本地上傳模式 (Local Playlist)
+# ==========================================
+else:
+    with st.sidebar:
+        st.header("📂 上傳本地影片")
+        uploaded_files = st.file_uploader("選擇影片檔案", type=["mp4", "mov"], accept_multiple_files=True)
+        
+        if st.button("更新本地清單"):
+            if uploaded_files:
+                st.session_state.local_playlist = []
+                for f in uploaded_files:
+                    st.session_state.local_playlist.append({"name": f.name, "bytes": f.read()})
+                st.session_state.local_idx = 0
+                st.rerun()
+        
+        st.divider()
+        st.header("📜 本地播放清單")
+        if not st.session_state.local_playlist:
+            st.write("請先選擇並上傳檔案。")
+        else:
+            for i, vid in enumerate(st.session_state.local_playlist):
+                label = f"▶️ {vid['name']}" if i == st.session_state.local_idx else vid['name']
+                if st.button(label, key=f"local_{i}", use_container_width=True):
+                    st.session_state.local_idx = i
+                    st.rerun()
+            if st.button("🗑️ 清空本地清單"):
+                st.session_state.local_playlist = []
+                st.rerun()
+
+    if st.session_state.local_playlist:
+        st.session_state.local_idx %= len(st.session_state.local_playlist)
+        current = st.session_state.local_playlist[st.session_state.local_idx]
+        
+        st.subheader(f"正在播放本地：{current['name']}")
+        
+        # --- 自動播放關鍵設定 ---
+        st.video(current['bytes'], autoplay=True, muted=True)
+        
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("⏮️ 上一段"):
+                st.session_state.local_idx = (st.session_state.local_idx - 1) % len(st.session_state.local_playlist)
+                st.rerun()
+        with col2:
+            if st.button("下一段 ⏭️"):
+                st.session_state.local_idx = (st.session_state.local_idx + 1) % len(st.session_state.local_playlist)
+                st.rerun()
+    else:
+        st.info("請於側邊欄選擇影片檔案並按下「更新本地清單」。")
