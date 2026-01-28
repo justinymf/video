@@ -7,6 +7,7 @@ import re
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+/*
 # --- AWS SES SMTP 配置 ---
 SMTP_SERVER = "email-smtp.eu-west-1.amazonaws.com" 
 SMTP_PORT = 587 # 建議使用 587 配合 TLS
@@ -151,6 +152,8 @@ with st.sidebar:
                         playlist.pop(i)
                         save_data(playlist) # 同步儲存
                         st.rerun()
+
+*/
 
 # --- 主畫面：播放區域 ---
 if playlist:
